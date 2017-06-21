@@ -1,8 +1,18 @@
-setwd('~/Desktop/nicheNet')
+setwd('~/Desktop/nicheNet')  #shouldn't need to set working directory if running script from base dir
 library(raster)
 library(spatial.tools)
 library(rgdal)
 
+######NOTE YOU NEED TO MAKE SURE NULL VALUES ARE WHAT YOU WANT #########
+######SET NULLS USING THE LOOP BELOW############
+
+#for (r in list){
+	#raster <- raster(r)
+	#print(raster)
+	#raster[is.na(raster)] <- 0
+	#print(raster)
+	#writeRaster(raster,filename=paste0(r,"nullzero.asc"))
+#}
 
 #read in known occurence points
 read.csv("./data/Locs.csv")->points 
@@ -18,7 +28,7 @@ list <- list.files(path="./data/layers", pattern="*.asc")
 nlist <- length(list)
 list
 nlist
-
+na <- NA
 #read in features
 setwd("./data/layers")
 Stack <- stack(list)
@@ -28,9 +38,11 @@ buf<- unlist(res[1]*5)  #change the 5 to whatever radius you want for punches
 Stack
 setwd("../")
 
+
+
 #make buffer size using matrix then make center point 0 # represents the center cell you are inputing -- this is how you adjust punch size
-buffer <- matrix(1, 11, 11)
-buffer[6,6] <- 0
+buffer <- matrix(1, 27, 27)
+buffer[14,14] <- 0
 buffer
 list.files()
 #make output folder for positive occurences
@@ -46,13 +58,13 @@ for (i in 1:npoints){
 	punch <- crop(Stack, r)
 	print(punch)
 	dir.create(noquote(paste0("./test_Set/true/",cell)))
-	writeRaster(punch, filename=paste0("test_Set/true/",cell,"/",cell,".asc"), bylayer=T)
+	writeRaster(punch, filename=paste0("test_Set/true/",cell,"/",cell,".asc"), bylayer=T, overwrite=T)
 	print(noquote(paste0(cell,".asc")))
 	truecells <- c(truecells,cell)
 }
 
 #generate a random distribution of points within study region
-background <- sampleRandom(ras, 279, cells=T, xy = TRUE, sp=F, na.rm = TRUE)  #set number of reps
+background <- sampleRandom(ras, 1000, cells=T, xy = TRUE, sp=F, na.rm = TRUE)  #set number of reps
 write.csv(background[,1:3],"./test_Set/background_sampling.csv")
 background[,1] -> background
 background<- data.frame(background)
