@@ -4,7 +4,7 @@ library(spatial.tools)
 library(rgdal)
 
 ######NOTE YOU NEED TO MAKE SURE NULL VALUES ARE WHAT YOU WANT #########
-######SET NULLS USING THE LOOP BELOW############
+#######SET NULLS USING THE LOOP BELOW############
 
 #for (r in list){
 	#raster <- raster(r)
